@@ -1,0 +1,192 @@
+.queue-container {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.queue-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.stat-card:nth-child(2) {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.stat-card:nth-child(3) {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.stat-card:nth-child(4) {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.tasks-list {
+  margin-top: 2rem;
+}
+
+.tasks-list h3 {
+  margin: 0 0 1.5rem 0;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.tasks-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.task-card {
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.task-card:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.task-card.task-completed {
+  border-color: #4CAF50;
+  background: #f1f8f4;
+}
+
+.task-card.task-downloading {
+  border-color: #2196F3;
+  background: #e3f2fd;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.task-card.task-failed {
+  border-color: #f44336;
+  background: #ffebee;
+}
+
+.task-card.task-pending {
+  border-color: #FF9800;
+  background: #fff3e0;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-pending {
+  background: #FF9800;
+  color: white;
+}
+
+.status-downloading {
+  background: #2196F3;
+  color: white;
+}
+
+.status-completed {
+  background: #4CAF50;
+  color: white;
+}
+
+.status-failed {
+  background: #f44336;
+  color: white;
+}
+
+.task-time {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.task-title {
+  margin: 0;
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.task-filename {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #4CAF50;
+  font-weight: 500;
+}
+
+.task-error {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #f44336;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  color: #999;
+}
+
+@media (max-width: 768px) {
+  .queue-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
