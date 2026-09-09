@@ -93,11 +93,13 @@ const VideoList = ({ videos, onDownload }) => {
               <div className="channel-name">{video.channel_name}</div>
               <div className="video-meta">
                 {formatViews(video.view_count) && <span>{formatViews(video.view_count)} views</span>}
-                <span>{new Date(video.published_at).toLocaleDateString()}</span>
+                {video.published_at && <span>{new Date(video.published_at).toLocaleDateString()}</span>}
               </div>
-              <a href={video.url} target="_blank" rel="noopener noreferrer" className="btn-link">
-                Watch on YouTube →
-              </a>
+              <div className="video-card-footer">
+                <a href={video.url} target="_blank" rel="noopener noreferrer" className="btn-link">
+                  Watch on YouTube
+                </a>
+              </div>
             </div>
           </div>
         ))}

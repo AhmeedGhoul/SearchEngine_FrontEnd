@@ -2,6 +2,7 @@ import { useState } from 'react';
 import SearchForm from './components/SearchForm';
 import VideoList from './components/VideoList';
 import DownloadQueue from './components/DownloadQueue';
+import Fingerprinting from './components/Fingerprinting';
 import apiService from './services/api';
 import './App.css';
 
@@ -43,11 +44,14 @@ function App() {
       <aside className="sidebar">
         <div className="sidebar-header">
           <h1 className="sidebar-brand">nablet</h1>
-          <p className="sidebar-subtitle">VIDEO-DNA MONITOR</p>
+          <p className="sidebar-subtitle">Video DNA Monitor</p>
         </div>
         <nav className="sidebar-nav">
           <div className={`nav-item ${activeTab === 'search' ? 'active' : ''}`} onClick={() => setActiveTab('search')}>
             Search
+          </div>
+          <div className={`nav-item ${activeTab === 'fingerprint' ? 'active' : ''}`} onClick={() => setActiveTab('fingerprint')}>
+            Fingerprint
           </div>
           <div className={`nav-item ${activeTab === 'downloads' ? 'active' : ''}`} onClick={() => setActiveTab('downloads')}>
             Downloads
@@ -59,10 +63,18 @@ function App() {
         <div className="container">
           <header className="app-header">
             <h1 className="page-title">
-              {activeTab === 'search' ? 'Search' : 'Download Queue'}
+              {activeTab === 'search'
+                ? 'Search'
+                : activeTab === 'fingerprint'
+                ? 'Fingerprinting'
+                : 'Download Queue'}
             </h1>
             <p className="page-subtitle">
-              {activeTab === 'search' ? 'Search and download YouTube videos' : 'Monitor your downloads'}
+              {activeTab === 'search'
+                ? 'Search YouTube videos or extract keywords from any video URL'
+                : activeTab === 'fingerprint'
+                ? 'Detect similar videos using fingerprinting'
+                : 'Monitor your downloads'}
             </p>
           </header>
 
@@ -93,6 +105,7 @@ function App() {
             </>
           )}
 
+          {activeTab === 'fingerprint' && <Fingerprinting />}
           {activeTab === 'downloads' && <DownloadQueue />}
         </div>
       </main>

@@ -7,7 +7,7 @@ const TagInput = ({
   name, 
   placeholder = '', 
   withSuggestions = false,
-  suggestionType = 'ml' // 'ml' = means like (related words), 'syn' = synonyms, 'trg' = triggers
+  suggestionType = 'ml'
 }) => {
   const [tags, setTags] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -17,7 +17,6 @@ const TagInput = ({
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
 
-  // Initialize tags from value prop
   useEffect(() => {
     if (value) {
       const parsedTags = value.split(',').map(t => t.trim()).filter(Boolean);
@@ -25,7 +24,6 @@ const TagInput = ({
     }
   }, [value]);
 
-  // Handle click outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -42,7 +40,6 @@ const TagInput = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Fetch suggestions from Datamuse API
   const fetchSuggestions = async (word) => {
     if (!word || word.length < 2) {
       setSuggestions([]);
@@ -51,7 +48,6 @@ const TagInput = ({
 
     setLoading(true);
     try {
-      // Datamuse API endpoint - completely free, no API key needed
       const response = await fetch(
         `https://api.datamuse.com/words?${suggestionType}=${encodeURIComponent(word)}&max=10`
       );

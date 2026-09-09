@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import ChannelAutocomplete from './ChannelAutocomplete';
 import TagInput from './TagInput';
+import apiService from '../services/api';
 import './SearchForm.css';
 
 const defaultForm = {
@@ -8,13 +9,30 @@ const defaultForm = {
   exclude_terms: '', published_after_days: '', duration: 'any',
   order: 'date', language: '', region: '', max_results: 10,
   video_type: 'video', safe_search: 'moderate', video_definition: '',
-  video_caption: '', video_license: '', event_type: '', channel_ids: [], 
+  video_caption: '', video_license: '', event_type: '', channel_ids: [],
   video_category_id: '',
+};
+
+const STEP_LABELS = {
+  download: 'Downloading video',
+  audio: 'Extracting audio',
+  asr: 'Transcribing speech',
+  vlm: 'Analyzing visuals',
+  llm: 'Generating keywords',
+  done: 'Done',
+  error: 'Failed',
 };
 
 const SearchForm = ({ onSearch, loading }) => {
   const [formData, setFormData] = useState(defaultForm);
   const [selectedChannels, setSelectedChannels] = useState([]);
+  const [smartUrl, setSmartUrl] = useState('');
+  const [extracting, setExtracting] = useState(false);
+  const [extractStep, setExtractStep] = useState('');
+  const [extractError, setExtractError] = useState('');
+  const esRef = useRef(null);
+
+  useEffect(() => () => esRef.current?.close(), []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,10 +49,84 @@ const SearchForm = ({ onSearch, loading }) => {
     setSelectedChannels(prev => prev.filter(c => c.id !== channelId));
   };
 
+  const handleExtract = async () => {
+    const url = smartUrl.trim();
+    if (!url) return;
+
+    setExtracting(true);
+    setExtractError('');
+    setExtractStep('Starting...');
+
+    let jobId;
+    try {
+      const res = await apiService.startKeywordAnalysis({
+        videoPath: url,
+        runAsr: true,
+        runVlm: true,
+        language: 'auto',
+      });
+      jobId = res.job_id;
+    } catch (err) {
+      setExtractError(err.message || 'Failed to start');
+      setExtracting(false);
+      return;
+    }
+
+    esRef.current = apiService.streamKeywordProgress(jobId, {
+      onStep: (data) => {
+        setExtractStep(STEP_LABELS[data.step] || data.step);
+      },
+      onDone: (result) => {
+        const keywords = (result?.keywords || []).map(k => k.kw);
+        const phrases = (result?.phrases || []);
+        const hashtags = (result?.hashtags || []);
+        const includeTerms = (result?.include_terms || []);
+        const excludeTerms = (result?.exclude_terms || []);
+
+        if (keywords.length > 0) {
+          setFormData(prev => ({
+            ...prev,
+            keywords: keywords.join(', '),
+            phrases: phrases.join(', '),
+            hashtags: hashtags.join(', '),
+            include_terms: includeTerms.join(', '),
+            exclude_terms: excludeTerms.join(', '),
+            order: 'relevance',
+            max_results: 20,
+          }));
+
+          setTimeout(() => {
+            onSearch({
+              keywords,
+              phrases: phrases.length ? phrases : null,
+              hashtags: hashtags.length ? hashtags : null,
+              include_terms: includeTerms.length ? includeTerms : null,
+              exclude_terms: excludeTerms.length ? excludeTerms : null,
+              published_after_days: null,
+              duration: 'any', order: 'relevance',
+              language: null, region: null, max_results: 20,
+              video_type: 'video', safe_search: 'moderate',
+              video_definition: null, video_caption: null,
+              video_license: null, event_type: null,
+              channel_ids: null, video_category_id: null,
+            });
+          }, 300);
+        }
+        setExtractStep('done');
+        setExtracting(false);
+      },
+      onError: (err) => {
+        setExtractError(typeof err === 'string' ? err : 'Pipeline error');
+        setExtractStep('error');
+        setExtracting(false);
+      },
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const split = (s) => s ? s.split(',').map(k => k.trim()).filter(Boolean) : null;
-    
+
     onSearch({
       keywords: split(formData.keywords),
       phrases: split(formData.phrases),
@@ -60,9 +152,50 @@ const SearchForm = ({ onSearch, loading }) => {
 
   return (
     <div className="search-form-container">
-      <form onSubmit={handleSubmit} className="search-form">
+      <div className="form-section smart-section">
+        <h3>Smart Search</h3>
+        <p className="smart-desc">
+          Paste a YouTube URL or video path.
+        </p>
+        <div className="smart-row">
+          <input
+            className="form-control smart-input"
+            type="text"
+            placeholder="https://youtube.com/watch?v=... or C:\path\to\video.mp4"
+            value={smartUrl}
+            onChange={e => setSmartUrl(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && !extracting && handleExtract()}
+            disabled={extracting}
+          />
+          <button
+            type="button"
+            className="btn btn-primary smart-btn"
+            onClick={handleExtract}
+            disabled={extracting || !smartUrl.trim()}
+          >
+            {extracting ? 'Analyzing...' : 'Extract & Search'}
+          </button>
+        </div>
 
-        {/* Basic Search */}
+        {extracting && (
+          <div className="smart-progress">
+            <div className="smart-progress-bar">
+              <div className="smart-progress-fill" />
+            </div>
+            <span className="smart-progress-label">{extractStep}</span>
+          </div>
+        )}
+
+        {extractError && !extracting && (
+          <div className="smart-error">{extractError}</div>
+        )}
+
+        {extractStep === 'done' && !extracting && (
+          <div className="smart-done">Keywords extracted   search results updated below.</div>
+        )}
+      </div>
+
+      <form onSubmit={handleSubmit} className="search-form">
         <div className="form-section">
           <h3>Basic Search</h3>
           
@@ -103,7 +236,6 @@ const SearchForm = ({ onSearch, loading }) => {
           </div>
         </div>
 
-        {/* Filters */}
         <div className="form-section">
           <h3>Filters</h3>
           
@@ -211,7 +343,6 @@ const SearchForm = ({ onSearch, loading }) => {
           </div>
         </div>
 
-        {/* Advanced Options */}
         <details className="form-section collapsible">
           <summary className="section-header">
             <h3>Advanced Options</h3>
@@ -323,7 +454,6 @@ const SearchForm = ({ onSearch, loading }) => {
           </div>
         </details>
 
-        {/* Action Buttons */}
         <div className="form-actions">
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? 'Searching...' : 'Search'}

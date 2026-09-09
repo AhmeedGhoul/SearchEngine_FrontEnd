@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import apiService from '../services/api';
 import './ChannelAutocomplete.css';
 
 const ChannelAutocomplete = ({ onSelect }) => {
@@ -26,12 +27,9 @@ const ChannelAutocomplete = ({ onSelect }) => {
   const fetchChannels = async (q) => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/channels/search?q=${encodeURIComponent(q)}`);
-      if (res.ok) {
-        const data = await res.json();
-        setChannels(data.channels || []);
-        setShowDropdown(data.channels.length > 0);
-      }
+      const data = await apiService.searchChannels(q);
+      setChannels(data.channels || []);
+      setShowDropdown((data.channels || []).length > 0);
     } catch {
     } finally {
       setLoading(false);
@@ -80,7 +78,7 @@ const ChannelAutocomplete = ({ onSelect }) => {
               <div className="channel-item">
                 {c.thumbnail ? (
                   <img 
-                    src={`http://localhost:8000${c.thumbnail}`}
+                    src={`${apiService.baseUrl}${c.thumbnail}`}
                     alt={c.title} 
                     className="channel-thumbnail"
                     onError={(e) => e.target.style.display = 'none'}

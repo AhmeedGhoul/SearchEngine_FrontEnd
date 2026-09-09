@@ -1,192 +1,170 @@
 .queue-container {
   background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 1.5rem 1.8rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .queue-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 1rem;
   margin-bottom: 2rem;
 }
 
 .stat-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 1.5rem;
+  background: #f8fafc;
+  padding: 1rem;
   border-radius: 10px;
   text-align: center;
-}
-
-.stat-card:nth-child(2) {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.stat-card:nth-child(3) {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-.stat-card:nth-child(4) {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  border: 1px solid #e5e7eb;
 }
 
 .stat-label {
-  font-size: 0.85rem;
-  opacity: 0.9;
-  margin-bottom: 0.5rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #6b7280;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .stat-value {
-  font-size: 2rem;
+  font-size: 1.6rem;
   font-weight: 700;
-}
-
-.tasks-list {
-  margin-top: 2rem;
+  color: #111827;
+  line-height: 1.2;
 }
 
 .tasks-list h3 {
-  margin: 0 0 1.5rem 0;
-  color: #333;
-  font-size: 1.3rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 1rem 0;
 }
 
 .tasks-grid {
-  display: grid;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
 .task-card {
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
-  padding: 1rem;
-  transition: all 0.3s ease;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  background: #f8fafc;
+  transition: all 0.2s ease;
 }
 
 .task-card:hover {
-  transform: translateX(4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #d1d5db;
 }
 
 .task-card.task-completed {
-  border-color: #4CAF50;
-  background: #f1f8f4;
+  border-color: #22c55e;
+  background: #f0fdf4;
 }
 
 .task-card.task-downloading {
-  border-color: #2196F3;
-  background: #e3f2fd;
-  animation: pulse 2s ease-in-out infinite;
+  border-color: #2563eb;
+  background: #eff6ff;
 }
 
 .task-card.task-failed {
-  border-color: #f44336;
-  background: #ffebee;
+  border-color: #ef4444;
+  background: #fef2f2;
 }
 
 .task-card.task-pending {
-  border-color: #FF9800;
-  background: #fff3e0;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  border-color: #f59e0b;
+  background: #fffbeb;
 }
 
 .task-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
 }
 
 .status-badge {
-  padding: 0.25rem 0.75rem;
+  padding: 0.1rem 0.6rem;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   font-weight: 600;
 }
 
 .status-pending {
-  background: #FF9800;
-  color: white;
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .status-downloading {
-  background: #2196F3;
-  color: white;
+  background: #dbeafe;
+  color: #1e40af;
 }
 
 .status-completed {
-  background: #4CAF50;
-  color: white;
+  background: #d1fae5;
+  color: #065f46;
 }
 
 .status-failed {
-  background: #f44336;
-  color: white;
+  background: #fecaca;
+  color: #991b1b;
 }
 
 .task-time {
-  font-size: 0.85rem;
-  color: #999;
+  font-size: 0.75rem;
+  color: #9ca3af;
 }
 
 .task-title {
-  margin: 0;
-  font-size: 1rem;
-  color: #333;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #111827;
 }
 
 .task-filename {
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
-  color: #4CAF50;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #065f46;
   font-weight: 500;
 }
 
 .task-error {
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
-  color: #f44336;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #991b1b;
 }
 
 .loading, .error {
   text-align: center;
   padding: 3rem;
-  color: #666;
+  color: #6b7280;
 }
 
 .empty-state {
   text-align: center;
   padding: 3rem;
-  color: #999;
-}
-
-.empty-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
+  color: #9ca3af;
 }
 
 .empty-state h3 {
-  color: #666;
+  color: #6b7280;
   margin-bottom: 0.5rem;
 }
 
 .empty-state p {
-  color: #999;
+  color: #9ca3af;
 }
 
 @media (max-width: 768px) {
   .queue-stats {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .queue-container {
+    padding: 1rem;
   }
 }

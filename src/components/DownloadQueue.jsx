@@ -19,7 +19,7 @@ const DownloadQueue = () => {
 
   useEffect(() => {
     fetchQueueStatus();
-    const interval = setInterval(fetchQueueStatus, 2000); // Poll every 2 seconds
+    const interval = setInterval(fetchQueueStatus, 2000);
     return () => clearInterval(interval);
   }, []);
 
